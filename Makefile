@@ -43,6 +43,13 @@ build: ## builds the application (default: playwright)
 build-rod: ## builds the application with go-rod browser engine
 	go build -tags rod -o bin/$(APP_NAME)-rod .
 
+build-prod:
+	DISABLE_TELEMETRY=1 go build -ldflags="-w -s" -o bin/google-maps-scraper .
+
+build-prod-static:
+	CG0_ENABLED=0 DISABLE_TELEMETRY=1 go build -ldflags="-w -s" -o bin/google-maps-scraper-static .
+
+
 cross-compile-rod: ## cross compiles the application with go-rod
 	GOOS=linux GOARCH=amd64 go build -tags rod -o bin/$(APP_NAME)-${VERSION}-rod-linux-amd64
 	GOOS=darwin GOARCH=amd64 go build -tags rod -o bin/$(APP_NAME)-${VERSION}-rod-darwin-amd64
