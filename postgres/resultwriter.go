@@ -63,7 +63,7 @@ func (r *resultWriter) batchSave(ctx context.Context, entries []*gmaps.Entry) er
 	}
 
 	q := `INSERT INTO results
-		(data)
+		(place_id, data)
 		VALUES
 		`
 	elements := make([]string, 0, len(entries))
@@ -75,8 +75,8 @@ func (r *resultWriter) batchSave(ctx context.Context, entries []*gmaps.Entry) er
 			return err
 		}
 
-		elements = append(elements, fmt.Sprintf("($%d)", i+1))
-		args = append(args, data)
+		elements = append(elements, fmt.Sprintf("($%d, $%d)", i*2+1, i*2+2))
+		args = append(args, entry.PlaceID, data)
 	}
 
 	q += strings.Join(elements, ", ")
