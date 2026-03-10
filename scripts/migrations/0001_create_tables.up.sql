@@ -8,7 +8,7 @@ BEGIN;
         status TEXT NOT NULL
     );
 
-    CREATE TABLE results(
+    CREATE TABLE gmaps_results(
         id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         title TEXT NOT NULL,
         category TEXT NOT NULL,

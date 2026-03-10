@@ -1,4 +1,4 @@
 BEGIN;
-    ALTER TABLE results DROP COLUMN latitude;
-    ALTER TABLE results DROP COLUMN longitude;
+    ALTER TABLE gmaps_results DROP COLUMN latitude;
+    ALTER TABLE gmaps_results DROP COLUMN longitude;
 COMMIT;

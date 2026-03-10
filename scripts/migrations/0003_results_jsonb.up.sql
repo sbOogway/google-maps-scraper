@@ -1,20 +1,20 @@
 BEGIN;
-    ALTER TABLE results DROP COLUMN title;
-    ALTER TABLE results DROP COLUMN category;
-    ALTER TABLE results DROP COLUMN address;
-    ALTER TABLE results DROP COLUMN openhours;
-    ALTER TABLE results DROP COLUMN website;
-    ALTER TABLE results DROP COLUMN phone;
-    ALTER TABLE results DROP COLUMN pluscode;
-    ALTER TABLE results DROP COLUMN review_count;
-    ALTER TABLE results DROP COLUMN rating;
-    ALTER TABLE results DROP COLUMN latitude; 
-    ALTER TABLE results DROP COLUMN longitude;
+    ALTER TABLE gmaps_results DROP COLUMN title;
+    ALTER TABLE gmaps_results DROP COLUMN category;
+    ALTER TABLE gmaps_results DROP COLUMN address;
+    ALTER TABLE gmaps_results DROP COLUMN openhours;
+    ALTER TABLE gmaps_results DROP COLUMN website;
+    ALTER TABLE gmaps_results DROP COLUMN phone;
+    ALTER TABLE gmaps_results DROP COLUMN pluscode;
+    ALTER TABLE gmaps_results DROP COLUMN review_count;
+    ALTER TABLE gmaps_results DROP COLUMN rating;
+    ALTER TABLE gmaps_results DROP COLUMN latitude; 
+    ALTER TABLE gmaps_results DROP COLUMN longitude;
 
-    ALTER TABLE results 
+    ALTER TABLE gmaps_results 
         ADD COLUMN data JSONB NOT NULL;
     
-    ALTER TABLE results 
+    ALTER TABLE gmaps_results 
         ADD COLUMN place_id TEXT NOT NULL;
 
 COMMIT;
