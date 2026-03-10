@@ -13,5 +13,8 @@ BEGIN;
 
     ALTER TABLE results 
         ADD COLUMN data JSONB NOT NULL;
+    
+    ALTER TABLE results 
+        ADD COLUMN place_id TEXT NOT NULL;
 
 COMMIT;

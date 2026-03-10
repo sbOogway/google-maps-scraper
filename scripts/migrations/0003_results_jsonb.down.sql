@@ -12,8 +12,9 @@ BEGIN;
         ADD COLUMN latitude DOUBLE PRECISION NOT NULL DEFAULT 0,
         ADD COLUMN longitude DOUBLE PRECISION NOT NULL DEFAULT 0;
 
+    ALTER TABLE results
+        DROP COLUMN data;
 
-        ALTER TABLE results 
-            DROP COLUMN data;
-    
+    ALTER TABLE results
+        DROP COLUMN place_id;
 COMMIT;
