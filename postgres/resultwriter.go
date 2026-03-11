@@ -95,7 +95,7 @@ func singleSave(ctx context.Context, db *sql.DB, entry *gmaps.Entry) error {
 
 	qcat := `insert into categories (business_id, category, subcategory)
 	values ($1, $2, $3)`
-	argsqcat := []any{id, dirtyMarshal(entry.Category), dirtyMarshal(entry.Categories)}
+	argsqcat := []any{id, entry.Category, dirtyMarshal(entry.Categories)}
 
 	// gmaps.id is the Google Maps place ID, not the business UUID
 	qg := `insert into gmaps (id, price_range, popular_times, review_rating, review_count, owner_id)
