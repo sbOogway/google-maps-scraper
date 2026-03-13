@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"log"
+
 	// "log"
 	"errors"
 	"time"
@@ -63,7 +65,7 @@ func dirtyMarshal(v interface{}) []byte {
 }
 
 func singleSave(ctx context.Context, db *sql.DB, entry *gmaps.Entry) error {
-	// log.Printf("singleSave: start saving entry title=%q place_id=%q\n", entry.Title, entry.PlaceID)
+	log.Printf("singleSave: start saving entry title=%q place_id=%q\n", entry.Title, entry.PlaceID)
 
 	qb := `insert into businesses (name, gmaps_id) values 
 	($1, $2) on conflict do nothing returning id`
@@ -78,16 +80,16 @@ func singleSave(ctx context.Context, db *sql.DB, entry *gmaps.Entry) error {
 	}()
 
 	var id string
-	// log.Printf("singleSave: inserting business name=%q place_id=%q\n", entry.Title, entry.PlaceID)
+	log.Printf("singleSave: inserting business name=%q place_id=%q\n", entry.Title, entry.PlaceID)
 	err = tx.QueryRowContext(ctx, qb, argsqb...).Scan(&id)
 	if err == sql.ErrNoRows {
-		// log.Printf("singleSave: business already scraped, skipping entry title=%q place_id=%q\n", entry.Title, entry.PlaceID)
+		log.Printf("singleSave: business already scraped, skipping entry title=%q place_id=%q\n", entry.Title, entry.PlaceID)
 		return err
 	} else if err != nil {
-		// log.Printf("singleSave: error inserting business for place_id=%q: %v\n", entry.PlaceID, err)
+		log.Printf("singleSave: error inserting business for place_id=%q: %v\n", entry.PlaceID, err)
 		return err
 	}
-	// log.Printf("singleSave: business insert returned id=%q for place_id=%q\n", id, entry.PlaceID)
+	log.Printf("singleSave: business insert returned id=%q for place_id=%q\n", id, entry.PlaceID)
 
 	qcon := `insert into contacts (business_id, phone_number, email, address, website)
 	values ($1, $2, $3, $4, $5)`
@@ -102,25 +104,25 @@ func singleSave(ctx context.Context, db *sql.DB, entry *gmaps.Entry) error {
 	values ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 	argsqg := []any{entry.PlaceID, entry.PriceRange, dirtyMarshal(entry.PopularTimes), entry.ReviewRating, entry.ReviewCount, entry.Owner.ID, entry.Latitude, entry.Longtitude, entry.Link}
 
-	// log.Printf("singleSave: inserting contacts for business_id=%q place_id=%q\n", id, entry.PlaceID)
+	log.Printf("singleSave: inserting contacts for business_id=%q place_id=%q\n", id, entry.PlaceID)
 	_, err = tx.ExecContext(ctx, qcon, argsqcon...)
 	if err != nil {
-		// log.Printf("singleSave: error inserting contacts for business_id=%q place_id=%q: %v\n", id, entry.PlaceID, err)
+		log.Printf("singleSave: error inserting contacts for business_id=%q place_id=%q: %v\n", id, entry.PlaceID, err)
 		return err
 	}
 
-	// log.Printf("singleSave: inserting categories for business_id=%q place_id=%q\n", id, entry.PlaceID)
+	log.Printf("singleSave: inserting categories for business_id=%q place_id=%q\n", id, entry.PlaceID)
 	_, err = tx.ExecContext(ctx, qcat, argsqcat...)
 	if err != nil {
-		// log.Printf("singleSave: error inserting categories for business_id=%q place_id=%q: %v\n", id, entry.PlaceID, err)
+		log.Printf("singleSave: error inserting categories for business_id=%q place_id=%q: %v\n", id, entry.PlaceID, err)
 		return err
 	}
 
-	// log.Printf("singleSave: inserting gmaps row for business_id=%q place_id=%q\n", id, entry.PlaceID)
+	log.Printf("singleSave: inserting gmaps row for business_id=%q place_id=%q\n", id, entry.PlaceID)
 	_, err = tx.ExecContext(ctx, qg, argsqg...)
 	if err != nil {
-		// log.Printf("singleSave: error inserting gmaps row for business_id=%q place_id=%q: %v\n", id, entry.PlaceID, err)
-		// log.Printf("singleSave: gmaps row: %v\n", argsqg)
+		log.Printf("singleSave: error inserting gmaps row for business_id=%q place_id=%q: %v\n", id, entry.PlaceID, err)
+		log.Printf("singleSave: gmaps row: %v\n", argsqg)
 		return err
 	}
 
