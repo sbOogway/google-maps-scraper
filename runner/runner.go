@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"sync"
 	"time"
@@ -80,6 +81,7 @@ type Config struct {
 	DisablePageReuse         bool
 	ExtraReviews             bool
 	LeadsDBAPIKey            string
+	Version                  bool
 }
 
 func ParseConfig() *Config {
@@ -127,8 +129,22 @@ func ParseConfig() *Config {
 	flag.BoolVar(&cfg.DisablePageReuse, "disable-page-reuse", false, "disable page reuse in playwright")
 	flag.BoolVar(&cfg.ExtraReviews, "extra-reviews", false, "enable extra reviews collection")
 	flag.StringVar(&cfg.LeadsDBAPIKey, "leadsdb-api-key", "", "LeadsDB API key for exporting results to LeadsDB")
+	flag.BoolVar(&cfg.Version, "version", false, "returns the version of the tool")
 
 	flag.Parse()
+
+	if cfg.Version {
+
+		info, ok := debug.ReadBuildInfo()
+		if !ok {
+			fmt.Println("build info not available")
+			os.Exit(1)
+		}
+
+		version := info.Main.Version
+		fmt.Printf("version: %s\n", version)
+		os.Exit(0)
+	}
 
 	if cfg.AwsAccessKey == "" {
 		cfg.AwsAccessKey = os.Getenv("MY_AWS_ACCESS_KEY")
