@@ -81,14 +81,15 @@ type Config struct {
 	DisablePageReuse         bool
 	ExtraReviews             bool
 	LeadsDBAPIKey            string
-	
+
 	// Grid scraping — divide a bounding box into cells to bypass the ~120
 	// results-per-search limit imposed by Google Maps.
 	GridBBox   string  // "minLat,minLon,maxLat,maxLon"
 	GridCellKm float64 // size of each grid cell in km (default: 1.0)
-	Version                  bool
+	Version    bool
 }
 
+//nolint:gocyclo // The cyclomatic complexity of this function is high due to the number of configuration options and validations.
 func ParseConfig() *Config {
 	cfg := Config{}
 
@@ -141,7 +142,6 @@ func ParseConfig() *Config {
 	flag.Parse()
 
 	if cfg.Version {
-
 		info, ok := debug.ReadBuildInfo()
 		if !ok {
 			fmt.Println("build info not available")
@@ -149,7 +149,17 @@ func ParseConfig() *Config {
 		}
 
 		version := info.Main.Version
-		fmt.Printf("version: %s\n", version)
+
+		var commit string
+
+		for _, s := range info.Settings {
+			if s.Key == "vcs.revision" {
+				commit = s.Value[:7]
+			}
+		}
+
+		fmt.Printf("%s-%s\n", version, commit)
+
 		os.Exit(0)
 	}
 
